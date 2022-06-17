@@ -94,4 +94,8 @@ public class BattleSnake {
     public void setCustomization(Customization customization) {
         this.customization = customization;
     }
+
+    public boolean equals(BattleSnake snake) {
+        return snake != null && this.id.equals(snake.id);
+    }
 }

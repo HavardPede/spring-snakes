@@ -1,7 +1,6 @@
 package com.example.springsnakes.entities;
 
 import com.example.springsnakes.Helper;
-import com.example.springsnakes.responses.MoveResponse;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
 public class NextMove {
     private GameState gameState;
 
-    List<Coordinate> possibleMoves = new ArrayList<>();
+    List<PossibleMove> possibleMoves = new ArrayList<>();
 
     public NextMove(GameState gameState) {
         this.gameState = gameState;
@@ -26,40 +25,47 @@ public class NextMove {
         removeCollisions();
         System.out.println(possibleMoves);
 
+        avoidHeadToHeadCollisions();
+        System.out.println(possibleMoves);
+
+        avoidHallways();
+
         // TODO Look for food
-        // TODO avoid hallways
     }
 
-    public Move getMove() {
-        // Randomise order to not get stuck in a corner
-        Collections.shuffle(possibleMoves);
+    public PossibleMove getMove() {
+        List<PossibleMove> clonedList = new ArrayList<>(possibleMoves);
 
-        return possibleMoves.stream()
-                .map(coordinate -> Helper.coordinateToMove(coordinate, gameState.getYou().getHead()))
-                .findFirst()
-                .orElse(null);
+        // Randomise order to not get stuck in a corner
+        Collections.shuffle(clonedList);
+        clonedList = Helper.getNonHTHCollisionOrAll(clonedList);
+
+        return clonedList.stream().findFirst().orElse(null);
     }
 
     private void createNextCoordinates() {
-        Coordinate head = gameState.getYou().getHead();
+        Coordinate from = gameState.getYou().getHead();
 
-        addMove(head.getX() - 1, head.getY());
-        addMove(head.getX() + 1, head.getY());
+        addMove(from,from.getX() - 1, from.getY());
+        addMove(from,from.getX() + 1, from.getY());
 
-        addMove(head.getX(), head.getY() - 1);
-        addMove(head.getX(), head.getY() + 1);
+        addMove(from,from.getX(), from.getY() - 1);
+        addMove(from,from.getX(), from.getY() + 1);
     }
 
-    private void addMove(int x, int y) {
-        possibleMoves.add(new Coordinate(x, y));
+    private void addMove(Coordinate from, int x, int y) {
+        possibleMoves.add(new PossibleMove(from, x, y));
     }
 
     private void removeMovesOffTheBoard() {
         possibleMoves = possibleMoves.stream()
-                .filter(coordinate ->
-                    coordinate.getX() >= 0 && coordinate.getY() >= 0
-                            && coordinate.getX() < gameState.getBoard().getWidth()
-                            && coordinate.getY() < gameState.getBoard().getWidth())
+                .filter(possibleMove -> {
+                    Coordinate coord = possibleMove.getCoordinate();
+
+                    return coord.getX() >= 0 && coord.getY() >= 0
+                            && coord.getX() < gameState.getBoard().getWidth()
+                            && coord.getY() < gameState.getBoard().getWidth();
+                })
                 .collect(Collectors.toList());
     }
 
@@ -71,5 +77,25 @@ public class NextMove {
         possibleMoves = possibleMoves.stream()
                 .filter(coordinate -> !snakeBody.contains(coordinate))
                 .collect(Collectors.toList());
+    }
+
+    private void avoidHeadToHeadCollisions() {
+        gameState.getBoard().getSnakes().stream()
+            .filter(snake -> !snake.equals(gameState.getYou()))
+            .forEach(this::handleHeadToHeadCollisionWithSnake);
+    }
+
+    private void handleHeadToHeadCollisionWithSnake(BattleSnake snake) {
+        List<Coordinate> moves = Helper.allMoves(snake.getHead());
+
+        possibleMoves.forEach(possibleMove -> {
+            if (moves.stream().anyMatch(move -> move.equals(possibleMove.coordinate))) {
+                possibleMove.headToHeadCollision = true;
+            }
+        });
+    }
+
+    private void avoidHallways() {
+        // TODO avoid hallways
     }
 }
