@@ -1,3 +1,5 @@
+package com.example.springsnakes;
+
 import com.example.springsnakes.entities.Move;
 import com.example.springsnakes.entities.GameState;
 

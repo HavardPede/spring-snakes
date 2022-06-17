@@ -1,14 +1,13 @@
+package com.example.springsnakes;
+
 import com.example.springsnakes.entities.GameState;
 import com.example.springsnakes.responses.CustomizationResponse;
 import com.example.springsnakes.responses.MoveResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
-@org.springframework.stereotype.Controller
+@RestController
 public class Controller {
-
     @Autowired
     private Service service;
 
