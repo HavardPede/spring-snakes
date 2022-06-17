@@ -8,8 +8,8 @@ public class BattleSnake {
     private String latency;
 
     private int health;
-    private Coordinate head;
     private Set<Coordinate> body;
+    private Coordinate head;
     private int length;
     private String shout;
     private String squad;

@@ -1,7 +1,7 @@
 package com.example.springsnakes.entities;
 
 public class Customization {
-    private final static String TEAL = "008080";
+    private final static String TEAL = "#008080";
 
     private String color;
     private String head;

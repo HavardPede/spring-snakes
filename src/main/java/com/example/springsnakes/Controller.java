@@ -23,11 +23,11 @@ public class Controller {
 
     @PostMapping("/move")
     public MoveResponse move(@RequestBody GameState gameState) {
-        return new MoveResponse(service.computeBestMove(gameState));
+        return service.computeBestMove(gameState);
     }
 
     @PostMapping("/end")
     public void end() {
-
+        // Deallocate resources based on game id
     }
 }
