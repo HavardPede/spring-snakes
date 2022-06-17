@@ -23,7 +23,10 @@ public class Controller {
 
     @PostMapping("/move")
     public MoveResponse move(@RequestBody GameState gameState) {
-        return service.computeBestMove(gameState);
+        MoveResponse response = service.computeBestMove(gameState);
+        System.out.println(response);
+
+        return response;
     }
 
     @PostMapping("/end")
