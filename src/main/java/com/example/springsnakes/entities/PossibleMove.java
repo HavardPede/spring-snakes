@@ -57,4 +57,12 @@ public class PossibleMove {
     public void setDownHallway(boolean downHallway) {
         this.downHallway = downHallway;
     }
+
+    @Override
+    public String toString() {
+        return "PossibleMove{" + move +
+                ", " + coordinate +
+                ", HTH=" + headToHeadCollision +
+                '}';
+    }
 }
