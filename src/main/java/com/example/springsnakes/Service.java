@@ -9,13 +9,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
 public class Service {
     public MoveResponse computeBestMove(GameState state) {
         Set<Coordinate> possibleNextCoordinates = createNextCoordinates(state.you.getHead());
-        removeOffBoard(possibleNextCoordinates, state.board.getHeight(), state.board.getWidth());
-        removeOwnBody(possibleNextCoordinates, state.you.getBody());
+        System.out.println("all coords");
+        System.out.println(possibleNextCoordinates);
+        possibleNextCoordinates = removeOffBoard(possibleNextCoordinates, state.board.getHeight(), state.board.getWidth());
+        System.out.println("all on board");
+        System.out.println(possibleNextCoordinates);
+        possibleNextCoordinates = removeOwnBody(possibleNextCoordinates, state.you.getBody());
+        System.out.println("all without body");
+        System.out.println(possibleNextCoordinates);
 
         // TODO: Using information from 'moveRequest', don't let your Battlesnake pick a
         // move
@@ -42,14 +49,18 @@ public class Service {
         return adjacentCoordinates;
     }
 
-    private void removeOffBoard(Set<Coordinate> coordinates, int height, int width) {
-        coordinates.stream().filter(coordinate ->
-                coordinate.getX() >= 0 && coordinate.getY() >= 0
-                && coordinate.getX() < height && coordinate.getY() < width);
+    private Set<Coordinate> removeOffBoard(Set<Coordinate> coordinates, int height, int width) {
+        return coordinates.stream()
+                .filter(coordinate ->
+                    coordinate.getX() >= 0 && coordinate.getY() >= 0
+                    && coordinate.getX() < height && coordinate.getY() < width)
+                .collect(Collectors.toSet());
     }
 
-    private void removeOwnBody(Set<Coordinate> coordinates, Set<Coordinate> body) {
-        coordinates.stream().filter(coordinate -> !body.contains(coordinate));
+    private Set<Coordinate> removeOwnBody(Set<Coordinate> coordinates, Set<Coordinate> body) {
+        return coordinates.stream()
+                .filter(coordinate -> !body.contains(coordinate))
+                .collect(Collectors.toSet());
     }
 
     // Todo this should be done better. We are assuming all coordinates are adjacent
