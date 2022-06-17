@@ -12,7 +12,7 @@ public class PossibleMove {
 
     PossibleMove(Coordinate from, int x, int y) {
         this.coordinate = new Coordinate(x, y);
-        this.move = Helper.coordinateToMove(coordinate, from);
+        this.move = Helper.coordinateToMove(from, coordinate);
         this.headToHeadCollision = false;
         this.towardsFood = false;
         this.downHallway = false;
