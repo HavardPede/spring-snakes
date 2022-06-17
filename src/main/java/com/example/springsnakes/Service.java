@@ -17,7 +17,7 @@ public class Service {
         Set<Coordinate> possibleNextCoordinates = createNextCoordinates(state.you.getHead());
         System.out.println("all coords");
         System.out.println(possibleNextCoordinates);
-        possibleNextCoordinates = removeOffBoard(possibleNextCoordinates, state.board.getHeight(), state.board.getWidth());
+        possibleNextCoordinates = removeOffBoard(possibleNextCoordinates, state.board.getWidth(), state.board.getHeight());
         System.out.println("all on board");
         System.out.println(possibleNextCoordinates);
         possibleNextCoordinates = removeOwnBody(possibleNextCoordinates, state.you.getBody());
@@ -49,11 +49,11 @@ public class Service {
         return adjacentCoordinates;
     }
 
-    private Set<Coordinate> removeOffBoard(Set<Coordinate> coordinates, int height, int width) {
+    private Set<Coordinate> removeOffBoard(Set<Coordinate> coordinates, int width, int height) {
         return coordinates.stream()
                 .filter(coordinate ->
                     coordinate.getX() >= 0 && coordinate.getY() >= 0
-                    && coordinate.getX() < height && coordinate.getY() < width)
+                    && coordinate.getX() < width && coordinate.getY() < height)
                 .collect(Collectors.toSet());
     }
 
@@ -67,13 +67,13 @@ public class Service {
     private Move coordinateToMove(Coordinate coordinate, Coordinate head) {
 
         if (coordinate.getX() > head.getX()) {
-            return Move.up;
-        } else if (coordinate.getX() < head.getX()) {
-            return Move.down;
-        } else if (coordinate.getY() > head.getY()) {
             return Move.right;
-        } else {
+        } else if (coordinate.getX() < head.getX()) {
             return Move.left;
+        } else if (coordinate.getY() > head.getY()) {
+            return Move.up;
+        } else {
+            return Move.down;
         }
     }
 
