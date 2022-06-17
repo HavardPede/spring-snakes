@@ -75,8 +75,9 @@ public class NextMove {
 
     private void removeCollision(Set<Coordinate> snakeBody) {
         possibleMoves = possibleMoves.stream()
-                .filter(coordinate -> !snakeBody.contains(coordinate))
+                .filter(pb -> !snakeBody.contains(pb.coordinate))
                 .collect(Collectors.toList());
+
     }
 
     private void avoidHeadToHeadCollisions() {
